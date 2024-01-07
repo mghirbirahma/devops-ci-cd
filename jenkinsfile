@@ -25,7 +25,6 @@ pipeline {
             agent any
             when {
                 changeset "**/backend/*.*"
-                beforeAgent { true }
             }
             steps {
                 dir('Backend') {
@@ -40,7 +39,6 @@ pipeline {
             agent any
             when {
                 changeset "**/frontend/*.*"
-                beforeAgent { true }
             }
             steps {
                 dir('frontend') {
