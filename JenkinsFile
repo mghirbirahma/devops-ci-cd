@@ -4,9 +4,7 @@ pipeline {
 // Ajouter la variable dh_cred comme variables d'authentification
 D      OCKERHUB_CREDENTIALS = credentials('dh_cred')
 }
-    triggers {
-      pollSCM('*/5 * * * *') // Vérifier toutes les 5 minutes
-    }   
+       
     stages {
       stage('Checkout'){
       agent any
