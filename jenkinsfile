@@ -2,7 +2,7 @@ pipeline {
     agent none
     environment {
         // Add the dh_cred variable for authentication
-        DOCKERHUB_CREDENTIALS = credentials('dh_cred')
+        DOCKERHUB_CREDENTIALS = credentials('dh_cred') 
     }
        
     stages {
