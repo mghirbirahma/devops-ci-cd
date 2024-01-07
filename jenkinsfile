@@ -38,7 +38,7 @@ pipeline {
      stage('Build Frontend'){
         agent any
         when{
-            changest "** /frontend/*.*"
+            changeset pattern: "**/backend/*.*", changes: true
             beforeagent true 
         }
      steps {
