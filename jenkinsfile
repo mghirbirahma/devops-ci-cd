@@ -22,7 +22,7 @@ pipeline {
      stage('Build Backend'){
         agent any
         when{
-           changeset script: "**/backend/*.*", changes: true
+           changeset pattern: "**/backend/*.*", changes: true
            beforeAgent true
 
         }
@@ -38,7 +38,7 @@ pipeline {
      stage('Build Frontend'){
         agent any
         when{
-            changeset pattern: "**/backend/*.*", changes: true
+            changeset pattern: "**/frontend/*.*", changes: true
             beforeagent true 
         }
      steps {
