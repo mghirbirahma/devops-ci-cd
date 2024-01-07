@@ -6,26 +6,25 @@ pipeline {
     }
        
     stages {
-        stage('Checkout') {
+        stage('Checkout'){
             agent any
-            steps {
+            steps{
                 checkout scm
             }
         }
 
-        stage('Init') {
-            agent any
-            steps {
-                // Authenticate with Docker Hub
+       stage('Init'){
+            steps{
+                // Permet l'authentification
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
 
         stage('Build Backend') {
             agent any
-            when {
-                changeset "**/backend/*.*"
-            }
+            //when {
+             //   changeset "**/backend/*.*"
+            //}
             steps {
                 dir('Backend') {
                     sh 'docker build -t $DOCKERHUB_CREDENTIALS_USR/produit_backend:$BUILD_ID .'
@@ -37,9 +36,9 @@ pipeline {
 
         stage('Build Frontend') {
             agent any
-            when {
-                changeset "**/frontend/*.*"
-            }
+            //when {
+             //   changeset "**/frontend/*.*"
+            //}
             steps {
                 dir('frontend') {
                     sh 'docker build -t $DOCKERHUB_CREDENTIALS_USR/produit_frontend:$BUILD_ID .'
@@ -56,4 +55,5 @@ pipeline {
             }
         }
     }
+
 }
