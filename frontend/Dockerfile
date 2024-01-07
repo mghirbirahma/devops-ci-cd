@@ -8,13 +8,13 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
-
+#comment
 # Copy the rest of the application code
 COPY . .
 
 # Build the React app
 RUN npm run build
-
+#comment
 # Serve stage
 FROM nginx:1.25.1
 
