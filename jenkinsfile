@@ -22,8 +22,9 @@ pipeline {
      stage('Build Backend'){
         agent any
         when{
-            changest "** /backend/*.*"
-            beforeagent true 
+           changeset script: "**/backend/*.*", changes: true
+           beforeAgent true
+
         }
        steps {
         dir('Backend'){
