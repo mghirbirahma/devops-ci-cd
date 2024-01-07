@@ -1,61 +1,61 @@
 pipeline {
     agent none
     environment {
-// Ajouter la variable dh_cred comme variables d'authentification
-    DOCKERHUB_CREDENTIALS = credentials('dh_cred')
-}
+        // Add the dh_cred variable for authentication
+        DOCKERHUB_CREDENTIALS = credentials('dh_cred')
+    }
        
     stages {
-      stage('Checkout'){
-      agent any
-      steps{
-        checkout scm
-       }
-     }
-     stage('Init'){
-        agent any
-      steps{
-          // Permet l'authentification
-         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-        }      
-     }       
-     stage('Build Backend'){
-        agent any
-        when{
-           changeset "**/backend/*.*"
-           beforeAgent true
+        stage('Checkout') {
+            agent any
+            steps {
+                checkout scm
+            }
+        }
 
+        stage('Init') {
+            agent any
+            steps {
+                // Authenticate with Docker Hub
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
         }
-       steps {
-        dir('Backend'){
-                sh 'docker build -t DOCKERHUB_CREDENTIALS_USR/produit_backend:$BUILD_ID .'
-                sh 'docker push $DOCKERHUB_CREDENTIALS_USR/produit_backend:$BUILD_ID'
-                sh 'docker rmi $DOCKERHUB_CREDENTIALS_USR/produit_backend:$BUILD_ID'
-            } 
+
+        stage('Build Backend') {
+            agent any
+            when {
+                changeset "**/backend/*.*"
+                beforeAgent { true }
+            }
+            steps {
+                dir('Backend') {
+                    sh 'docker build -t $DOCKERHUB_CREDENTIALS_USR/produit_backend:$BUILD_ID .'
+                    sh 'docker push $DOCKERHUB_CREDENTIALS_USR/produit_backend:$BUILD_ID'
+                    sh 'docker rmi $DOCKERHUB_CREDENTIALS_USR/produit_backend:$BUILD_ID'
+                } 
+            }
         }
-        
-     }
-     stage('Build Frontend'){
-        agent any
-        when{
-            changeset  "**/frontend/*.*"
-            beforeagent true 
+
+        stage('Build Frontend') {
+            agent any
+            when {
+                changeset "**/frontend/*.*"
+                beforeAgent { true }
+            }
+            steps {
+                dir('frontend') {
+                    sh 'docker build -t $DOCKERHUB_CREDENTIALS_USR/produit_frontend:$BUILD_ID .'
+                    sh 'docker push $DOCKERHUB_CREDENTIALS_USR/produit_frontend:$BUILD_ID'
+                    sh 'docker rmi $DOCKERHUB_CREDENTIALS_USR/produit_frontend:$BUILD_ID'
+                } 
+            }
         }
-     steps {
-      dir('frontend'){
-         sh 'docker build -t DOCKERHUB_CREDENTIALS_USR/produit_fronend:$BUILD_ID .'
-         sh 'docker push $DOCKERHUB_CREDENTIALS_USR/produit_frontend:$BUILD_ID'
-         sh 'docker rmi $DOCKERHUB_CREDENTIALS_USR/produit_frontend:$BUILD_ID'
-        } 
+
+        stage('Logout') {
+            agent any
+            steps {
+                sh 'docker logout'
+            }
         }
-        
-     }
-     stage('logout'){
-      agent any  
-      steps {
-         
-         sh 'docker logout'
-        } 
-     }
     }
 }
